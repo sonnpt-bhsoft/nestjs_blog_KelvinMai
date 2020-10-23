@@ -10,7 +10,7 @@ export class AuthController {
   register(@Body(ValidationPipe) credentials: RegisterDTO) {
     return this.authService.register(credentials);
   }
-  @Post('/login')
+  @Post('login')
   login(@Body(ValidationPipe) credentials: LoginDTO) {
     return this.authService.login(credentials);
   }
