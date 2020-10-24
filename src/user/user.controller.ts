@@ -2,24 +2,26 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Put,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/auth/user.decorator';
 import { UserEntity } from 'src/entities/user.entity';
 import { UpdateUserDTO } from 'src/models/user.dto';
-import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private authService: AuthService) {}
 
   @Get()
+  @HttpCode(200)
   @UseGuards(AuthGuard())
-  findCurrentUser(@User() { username }: UserEntity) {
-    return this.userService.findByUsername(username);
+  async findCurrentUser(@User() { username }: UserEntity) {
+    return this.authService.findCurrentUser(username);
   }
 
   @Put()
@@ -28,8 +30,8 @@ export class UserController {
     @User() { username }: UserEntity,
     //reject add unnecessary property not exist in db - new ValidationPipe
     @Body(new ValidationPipe({ transform: true, whitelist: true }))
-    data: UpdateUserDTO,
+    data: { user: UpdateUserDTO },
   ) {
-    return this.userService.updateUser(username, data);
+    return this.authService.updateUser(username, data.user);
   }
 }

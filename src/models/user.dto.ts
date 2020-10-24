@@ -40,3 +40,4 @@ export class UpdateUserDTO {
 export interface authPayload {
   username: string;
 }
+
