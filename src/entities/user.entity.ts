@@ -1,27 +1,37 @@
-import { classToPlain, Exclude } from 'class-transformer';
-import { IsEmail } from 'class-validator';
-import { BeforeInsert, Column, Entity, JoinTable, ManyToMany } from 'typeorm';
-import { AbstractEntity } from './abstract-entity';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Exclude, classToPlain } from 'class-transformer';
+import { IsEmail } from 'class-validator';
+
+import { AbstractEntity } from './abstract-entity';
+import { ArticleEntity } from './article.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
-  @Column({ unique: true })
+  @Column()
   @IsEmail()
   email: string;
 
   @Column({ unique: true })
   username: string;
 
-  @Column()
-  @Exclude()
-  password: string;
-
-  @Column({ default: null, nullable: true })
+  @Column({ default: '' })
   bio: string;
 
   @Column({ default: null, nullable: true })
   image: string | null;
+
+  @Column()
+  @Exclude()
+  password: string;
 
   @ManyToMany(
     type => UserEntity,
@@ -35,6 +45,24 @@ export class UserEntity extends AbstractEntity {
     user => user.followers,
   )
   followee: UserEntity[];
+
+  @OneToMany(
+    type => CommentEntity,
+    comment => comment.author,
+  )
+  comments: CommentEntity[];
+
+  @OneToMany(
+    type => ArticleEntity,
+    article => article.author,
+  )
+  articles: ArticleEntity[];
+
+  @ManyToMany(
+    type => ArticleEntity,
+    article => article.favoritedBy,
+  )
+  favorites: ArticleEntity[];
 
   @BeforeInsert()
   async hashPassword() {
