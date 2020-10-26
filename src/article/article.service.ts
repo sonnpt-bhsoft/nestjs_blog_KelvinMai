@@ -34,9 +34,9 @@ export class ArticleService {
     const findOptional: any = {
       where: {},
     };
-    if (query.author) {
-      findOptional.where['author.username'] = query.author;
-    }
+    // if (query.author) {
+    //   findOptional.where['author.username'] = query.author;
+    // }
     // if (query.favorited) {
     //   findOptional.where['favoritedBy.username'] = query.favorited;
     // }
@@ -80,6 +80,7 @@ export class ArticleService {
   async createArticle(user: UserEntity, data: CreateArticleDTO) {
     const article = this.articleRepo.create(data);
     article.author = user;
+    await this.upsertTags(data.tagList);
     const { slug } = await article.save();
     return (await this.articleRepo.findOne({ slug })).toArticle(user);
   }

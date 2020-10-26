@@ -12,7 +12,7 @@ export class AppController {
 
   @Get('/tags')
   async findTags() {
-    const tags = this.appService.findTags();
+    const tags = await this.appService.findTags();
     return { tags };
   }
 }
