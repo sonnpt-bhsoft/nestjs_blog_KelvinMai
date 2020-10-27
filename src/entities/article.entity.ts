@@ -14,7 +14,6 @@ import { AbstractEntity } from './abstract-entity';
 import { UserEntity } from './user.entity';
 import { CommentEntity } from './comment.entity';
 
-
 @Entity('articles')
 export class ArticleEntity extends AbstractEntity {
   @Column()
@@ -30,7 +29,7 @@ export class ArticleEntity extends AbstractEntity {
   body: string;
 
   @ManyToMany(
-    type => UserEntity,
+    () => UserEntity,
     user => user.favorites,
     { eager: true },
   )
@@ -50,14 +49,14 @@ export class ArticleEntity extends AbstractEntity {
   }
 
   @OneToMany(
-    type => CommentEntity,
+    () => CommentEntity,
     comment => comment.article,
   )
   comments: CommentEntity[];
 
   // many article to one user
   @ManyToOne(
-    type => UserEntity,
+    () => UserEntity,
     user => user.articles,
     { eager: true },
   )

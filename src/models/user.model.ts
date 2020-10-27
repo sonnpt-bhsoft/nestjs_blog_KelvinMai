@@ -6,6 +6,7 @@ import {
   MinLength,
 } from 'class-validator';
 import {} from 'class-validator';
+import { UserEntity } from 'src/entities/user.entity';
 
 export class LoginDTO {
   @IsEmail()
@@ -41,3 +42,17 @@ export interface authPayload {
   username: string;
 }
 
+export interface UserResponse {
+  email: string;
+  username?: string;
+  bio: string;
+  image: string | null;
+}
+
+export interface AuthResponse extends UserResponse {
+  token: string;
+}
+
+export interface ProfileResponse extends UserResponse {
+  following: boolean | null;
+}

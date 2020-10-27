@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { ResponseObject } from './models/response.model';
 
 @Controller()
 export class AppController {
@@ -11,7 +12,7 @@ export class AppController {
   }
 
   @Get('/tags')
-  async findTags() {
+  async findTags(): Promise<ResponseObject<'tags', string[]>> {
     const tags = await this.appService.findTags();
     return { tags };
   }

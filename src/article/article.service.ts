@@ -8,6 +8,7 @@ import {
   FindAllQuery,
   FindFeedQuery,
   UpdateArticleDTO,
+  ArticleResponse,
 } from 'src/models/article.model';
 import { Like, Repository } from 'typeorm';
 
@@ -30,16 +31,24 @@ export class ArticleService {
     );
   }
 
-  async findAll(user: UserEntity, query: FindAllQuery) {
+  async findAll(
+    user: UserEntity,
+    query: FindAllQuery,
+  ): Promise<ArticleResponse[]> {
     const findOptional: any = {
       where: {},
     };
-    // if (query.author) {
-    //   findOptional.where['author.username'] = query.author;
-    // }
-    // if (query.favorited) {
-    //   findOptional.where['favoritedBy.username'] = query.favorited;
-    // }
+    if (query.author) {
+      this.articleRepo.find({
+        relations: ['author'],
+      });
+    }
+    if (query.favorited) {
+      this.articleRepo.find({
+        relations: ['favoritedBy.username'],
+      });
+    }
+
     if (query.tag) {
       findOptional.where.tagList = Like(`%${query.tag}%`);
     }
@@ -54,7 +63,7 @@ export class ArticleService {
     );
   }
 
-  async findFeed(user: UserEntity, query: FindFeedQuery) {
+  async findFeed(user: UserEntity, query: FindFeedQuery): Promise<ArticleResponse[]> {
     const { followee } = await this.userRepo.findOne({
       where: { id: user.id },
       relations: ['followee'],
@@ -100,6 +109,7 @@ export class ArticleService {
       throw new UnauthorizedException();
     }
     await this.articleRepo.remove(article);
+    return article.toArticle(user);
   }
 
   async favoriteArticle(slug: string, user: UserEntity) {

@@ -1,12 +1,8 @@
-import { Column, Entity } from 'typeorm'
+import { Column, Entity } from 'typeorm';
 import { AbstractEntity } from './abstract-entity';
 
 @Entity('tags')
-export class TagEntity extends AbstractEntity{
-    @Column()
-    tag: string;
-
-    toJSON() {
-        return this.tag;
-    }
+export class TagEntity extends AbstractEntity {
+  @Column()
+  tag: string;
 }

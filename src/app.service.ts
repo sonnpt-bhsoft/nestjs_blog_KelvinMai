@@ -10,7 +10,8 @@ export class AppService {
     return 'Hello World!';
   }
 
-  findTags(){
-    return this.tagRepo.find();
+  async findTags(){
+    const tags = await this.tagRepo.find();
+    return tags.map(tag => tag.tag);
   }
 }

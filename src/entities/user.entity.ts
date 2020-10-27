@@ -13,6 +13,7 @@ import { IsEmail } from 'class-validator';
 import { AbstractEntity } from './abstract-entity';
 import { ArticleEntity } from './article.entity';
 import { CommentEntity } from './comment.entity';
+import { UserResponse } from 'src/models/user.model';
 
 @Entity('users')
 export class UserEntity extends AbstractEntity {
@@ -34,32 +35,32 @@ export class UserEntity extends AbstractEntity {
   password: string;
 
   @ManyToMany(
-    type => UserEntity,
+    () => UserEntity,
     user => user.followee,
   )
   @JoinTable()
   followers: UserEntity[];
 
   @ManyToMany(
-    type => UserEntity,
+    () => UserEntity,
     user => user.followers,
   )
   followee: UserEntity[];
 
   @OneToMany(
-    type => CommentEntity,
+    () => CommentEntity,
     comment => comment.author,
   )
   comments: CommentEntity[];
 
   @OneToMany(
-    type => ArticleEntity,
+    () => ArticleEntity,
     article => article.author,
   )
   articles: ArticleEntity[];
 
   @ManyToMany(
-    type => ArticleEntity,
+    () => ArticleEntity,
     article => article.favoritedBy,
   )
   favorites: ArticleEntity[];
@@ -74,7 +75,7 @@ export class UserEntity extends AbstractEntity {
   }
 
   toJSON() {
-    return classToPlain(this);
+    return <UserResponse>classToPlain(this);
   }
 
   toProfile(user?: UserEntity) {
